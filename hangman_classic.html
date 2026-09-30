@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeAlpha - Hangman Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4a90e2;
+        }
+        .word-display {
+            font-size: 35px;
+            letter-spacing: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .message {
+            font-size: 18px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .keyboard {
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+        .btn:hover:not(:disabled) {
+            background-color: #357abd;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .restart-btn {
+            background-color: #27ae60;
+            margin-top: 20px;
+            display: none;
+        }
+        .restart-btn:hover {
+            background-color: #219653;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>CodeAlpha Hangman Game</h1>
+        <p>Guess the hidden Python-related word!</p>
+        
+        <div class="word-display" id="wordDisplay">_ _ _ _ _</div>
+        <div class="message" id="message">Incorrect guesses left: <span id="lives">6</span></div>
+        
+        <div class="keyboard" id="keyboard"></div>
+        
+        <button class="btn restart-btn" id="restartBtn" onclick="startGame()">Play Again</button>
+    </div>
+
+    <script>
+        const words = ["PYTHON", "CODE", "ALPHA", "INTERN", "DEVELOPER"];
+        let selectedWord = "";
+        let guessedLetters = [];
+        let lives = 6;
+
+        const wordDisplay = document.getElementById("wordDisplay");
+        const message = document.getElementById("message");
+        const livesSpan = document.getElementById("lives");
+        const keyboard = document.getElementById("keyboard");
+        const restartBtn = document.getElementById("restartBtn");
+
+        function startGame() {
+            selectedWord = words[Math.floor(Math.random() * words.length)];
+            guessedLetters = [];
+            lives = 6;
+            livesSpan.textContent = lives;
+            restartBtn.style.display = "none";
+            message.innerHTML = `Incorrect guesses left: <span id="lives">${lives}</span>`;
+            
+            updateWordDisplay();
+            createKeyboard();
+        }
+
+        function updateWordDisplay() {
+            let displayString = "";
+            let win = true;
+            for (let letter of selectedWord) {
+                if (guessedLetters.includes(letter)) {
+                    displayString += letter + " ";
+                } else {
+                    displayString += "_ ";
+                    win = false;
+                }
+            }
+            wordDisplay.textContent = displayString.trim();
+
+            if (win) {
+                message.textContent = "🎉 Congratulations! You Won!";
+                disableKeyboard();
+                restartBtn.style.display = "inline-block";
+            }
+        }
+
+        function createKeyboard() {
+            keyboard.innerHTML = "";
+            for (let i = 65; i <= 90; i++) {
+                let letter = String.fromCharCode(i);
+                let button = document.createElement("button");
+                button.textContent = letter;
+                button.classList.add("btn");
+                button.id = "btn-" + letter;
+                button.onclick = () => handleGuess(letter, button);
+                keyboard.appendChild(button);
+            }
+        }
+
+        function handleGuess(letter, button) {
+            button.disabled = true;
+            guessedLetters.push(letter);
+
+            if (selectedWord.includes(letter)) {
+                updateWordDisplay();
+            } else {
+                lives--;
+                livesSpan.textContent = lives;
+                if (lives === 0) {
+                    wordDisplay.textContent = selectedWord.split("").join(" ");
+                    message.textContent = "❌ Game Over! The word was: " + selectedWord;
+                    disableKeyboard();
+                    restartBtn.style.display = "inline-block";
+                }
+            }
+        }
+
+        function disableKeyboard() {
+            const buttons = keyboard.getElementsByClassName("btn");
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        // Initialize game on load
+        startGame();
+    </script>
+</body>
+</html>

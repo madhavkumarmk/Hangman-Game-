@@ -1,0 +1,6 @@
+{
+  "name": "Hangman by CodeAlpha - Python Game & Project Studio",
+  "description": "Interactive Hangman game crafted for CodeAlpha Python Internship, featuring playable visual and terminal modes, clean Python code exporter, and viva explanation guide.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
